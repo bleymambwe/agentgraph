@@ -5,125 +5,142 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>__TITLE__</title>
 <style>
+/* Visual language: hollow nodes on a thin track, mono micro-labels, one green accent, white cards on a pale grid (flow);
+   agent at the centre with its tools around it on a green ground (hub). Fonts use IBM Plex when installed, else system fonts. */
 :root {
-  --bg: #eef1f4; --surface: #f9fafb; --fg: #16212b; --muted: #5a6978; --line: #d3dbe3; --accent: #0b6b72; --accent-soft: #d4ebed;
-  --ok: #23703a; --bad: #a3322a; --bad-soft: #f5dcd9; --warn: #a85a00; --warn-soft: #f6e6cf;
-  --k-task: #55657a; --k-plan: #7a5ac8; --k-think: #7d8791; --k-tool: #0b6b72; --k-query: #b06a00; --k-model: #2f6fd0;
-  --k-agent: #b83a74; --k-evidence: #3b8a4a; --k-decision: #8a6d00; --k-answer: #16212b; --k-error: #a3322a; --k-unknown: #7d8791;
-  --font: ui-sans-serif, "Segoe UI", system-ui, -apple-system, sans-serif; --mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --bg: #f4f5f7; --card: #ffffff; --line: #e2e3e7; --track: #cdd0d6; --fg: #23282d; --muted: #5c6168; --grid: rgba(35,40,45,.045);
+  --green: #009367; --green-d: #00553c; --blue: #2c527f; --red: #b3342b; --red-soft: #fbe9e7; --amber: #a86a00;
+  --hub: #dbefe1; --shadow: 0 1px 2px rgba(0,0,0,.04), 0 4px 16px rgba(0,0,0,.04);
+  --sans: "IBM Plex Sans", ui-sans-serif, "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #11181f; --surface: #182129; --fg: #e4eaf0; --muted: #93a1af; --line: #2a3640; --accent: #5fc4cc; --accent-soft: #17383c;
-    --ok: #6cc489; --bad: #ee8a82; --bad-soft: #3d1f1d; --warn: #f0b062; --warn-soft: #3a2b14;
-    --k-task: #8da0b6; --k-plan: #a58df0; --k-think: #98a2ad; --k-tool: #5fc4cc; --k-query: #e0a050; --k-model: #6fa3f5;
-    --k-agent: #ea78a9; --k-evidence: #6cc489; --k-decision: #d6b84a; --k-answer: #e4eaf0; --k-error: #ee8a82; --k-unknown: #98a2ad;
-    color-scheme: dark;
+    --bg: #0f1417; --card: #171e22; --line: #2a3338; --track: #3a454b; --fg: #e3e8ec; --muted: #8f9aa3; --grid: rgba(227,232,236,.045);
+    --green: #3fcf9f; --green-d: #8fe3c4; --blue: #86adda; --red: #f08a82; --red-soft: #3a1f1d; --amber: #e0a050; --hub: #14261d;
+    --shadow: 0 1px 2px rgba(0,0,0,.3); color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #11181f; --surface: #182129; --fg: #e4eaf0; --muted: #93a1af; --line: #2a3640; --accent: #5fc4cc; --accent-soft: #17383c;
-  --ok: #6cc489; --bad: #ee8a82; --bad-soft: #3d1f1d; --warn: #f0b062; --warn-soft: #3a2b14;
-  --k-task: #8da0b6; --k-plan: #a58df0; --k-think: #98a2ad; --k-tool: #5fc4cc; --k-query: #e0a050; --k-model: #6fa3f5;
-  --k-agent: #ea78a9; --k-evidence: #6cc489; --k-decision: #d6b84a; --k-answer: #e4eaf0; --k-error: #ee8a82; --k-unknown: #98a2ad;
-  color-scheme: dark;
+  --bg: #0f1417; --card: #171e22; --line: #2a3338; --track: #3a454b; --fg: #e3e8ec; --muted: #8f9aa3; --grid: rgba(227,232,236,.045);
+  --green: #3fcf9f; --green-d: #8fe3c4; --blue: #86adda; --red: #f08a82; --red-soft: #3a1f1d; --amber: #e0a050; --hub: #14261d;
+  --shadow: 0 1px 2px rgba(0,0,0,.3); color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html, body { height: 100%; }
-body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.5 var(--font); display: flex; flex-direction: column; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.5 var(--sans); display: flex; flex-direction: column; }
 button, select, input { font: inherit; color: inherit; }
-button { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 4px 10px; cursor: pointer; white-space: nowrap; }
-.ctl button { flex: none; }
-button:hover { border-color: var(--accent); }
-button[aria-pressed="true"], button.on { background: var(--accent); border-color: var(--accent); color: var(--bg); }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 5px 11px; cursor: pointer; white-space: nowrap; }
+button:hover { border-color: var(--track); }
+button[aria-pressed="true"] { background: var(--green-d); border-color: var(--green-d); color: var(--card); }
+:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
 .muted { color: var(--muted); }
-header.top { display: flex; flex-wrap: wrap; gap: 6px 20px; align-items: baseline; padding: 10px 16px; border-bottom: 1px solid var(--line); background: var(--surface); }
-header.top h1 { font-size: 1.05rem; margin: 0; }
-header.top .sub { font-size: 0.78rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 16px; }
-.app { flex: 1; min-height: 0; display: grid; grid-template-columns: 270px minmax(0, 1fr) 360px; }
-aside#runs { border-right: 1px solid var(--line); overflow: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; background: var(--surface); }
-.run-card { text-align: left; display: flex; flex-direction: column; gap: 3px; padding: 9px 10px; border-radius: 5px; width: 100%; }
-.run-card.sel { border-color: var(--accent); background: var(--accent-soft); color: var(--fg); }
-.run-card b { font-size: 0.9rem; }
-.run-card .t { font-size: 0.78rem; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.run-card .meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 0.72rem; font-family: var(--mono); color: var(--muted); }
+.micro { font: 500 10.5px/1.2 var(--mono); letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.status { font: 500 10.5px/1 var(--mono); letter-spacing: .09em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
+.status.success, .status.ok, .status.verified { color: var(--green); } .status.success::before, .status.ok::before, .status.verified::before { background: var(--green); }
+.status.failure, .status.error, .status.bad { color: var(--red); } .status.failure::before, .status.error::before, .status.bad::before { background: var(--red); }
+.status.partial, .status.running, .status.warn { color: var(--amber); } .status.partial::before, .status.running::before, .status.warn::before { background: var(--amber); }
+header.top { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: center; padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--card); }
+header.top .brand { display: flex; align-items: baseline; gap: 8px; }
+header.top .brand b { color: var(--green); font-family: var(--mono); }
+header.top h1 { font-size: 1rem; font-weight: 600; margin: 0; }
+header.top .sub { display: flex; flex-wrap: wrap; gap: 4px 18px; align-items: center; margin-left: auto; font-size: .78rem; color: var(--muted); }
+.app { flex: 1; min-height: 0; display: grid; grid-template-columns: 250px minmax(0, 1fr) 340px; }
+aside#runs { border-right: 1px solid var(--line); overflow: auto; background: var(--card); padding: 8px 0; }
+.run-card { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; width: 100%; text-align: left; border: 0; border-left: 2px solid transparent; border-radius: 0; padding: 10px 16px; background: none; }
+.run-card:hover { background: var(--bg); }
+.run-card.sel { background: var(--bg); border-left-color: var(--green); }
+.run-card b { font-weight: 600; font-size: .88rem; }
+.run-card .t { grid-column: 1 / -1; font-size: .78rem; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.run-card .meta { grid-column: 1 / -1; display: flex; gap: 12px; flex-wrap: wrap; margin-top: 2px; }
 main { min-width: 0; display: flex; flex-direction: column; min-height: 0; }
-.bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--line); background: var(--surface); }
-.seg { display: inline-flex; }
-.seg button { border-radius: 0; margin-left: -1px; }
-.seg button:first-child { border-radius: 4px 0 0 4px; margin-left: 0; }
-.seg button:last-child { border-radius: 0 4px 4px 0; }
-.ctl { display: flex; gap: 6px; align-items: center; flex: 1; min-width: 260px; }
-.ctl input[type=range] { flex: 1; min-width: 80px; accent-color: var(--accent); }
-.ctl .pos { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); min-width: 150px; text-align: right; }
-.legend { display: flex; flex-wrap: wrap; gap: 4px 12px; padding: 6px 12px; font-size: 0.72rem; border-bottom: 1px solid var(--line); color: var(--muted); }
-.legend i { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: -3px; margin-right: 4px; font: 700 9px/14px var(--mono); text-align: center; color: var(--bg); font-style: normal; }
-.stage { flex: 1; min-height: 0; overflow: auto; padding: 12px; }
-.chip { display: inline-block; font: 600 0.68rem/1 var(--mono); letter-spacing: 0.04em; text-transform: uppercase; padding: 3px 6px; border-radius: 3px; background: var(--line); color: var(--fg); }
-.chip.success, .chip.ok { background: var(--ok); color: var(--bg); }
-.chip.failure, .chip.error, .chip.bad { background: var(--bad); color: var(--bg); }
-.chip.partial, .chip.running, .chip.warn { background: var(--warn); color: var(--bg); }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
-.card.sel { border-color: var(--accent); }
-.card header { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; cursor: pointer; }
-.card header b { font-size: 0.92rem; }
-.card .task { font-size: 0.78rem; color: var(--muted); }
-.card svg.mini { width: 100%; height: 220px; background: var(--bg); border-radius: 4px; }
-.strip { display: flex; gap: 2px; flex-wrap: wrap; }
-.strip i { width: 9px; height: 9px; border-radius: 2px; background: var(--line); }
-.strip i.on { background: var(--c, var(--accent)); }
-.strip i.cur { outline: 2px solid var(--fg); outline-offset: 1px; }
-svg.graph text { font-family: var(--font); fill: var(--fg); }
-svg.graph .nbox { fill: var(--surface); stroke: var(--line); stroke-width: 1.2; }
+.bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--line); background: var(--card); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; border-radius: 0; border-left: 1px solid var(--line); background: none; } .seg button:first-child { border-left: 0; }
+.seg button[aria-pressed="true"] { background: var(--green-d); color: var(--card); }
+.ctl { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; flex: 1 1 520px; min-width: 0; }
+.ctl button { flex: none; padding: 5px 9px; }
+.ctl input[type=range] { flex: 1 1 120px; min-width: 80px; accent-color: var(--green); }
+.ctl .pos { font: 11px var(--mono); color: var(--muted); white-space: nowrap; flex: none; }
+.opt { font-size: .78rem; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; }
+.opt input { accent-color: var(--green); }
+.stage { flex: 1; min-height: 0; overflow: auto; padding: 20px; background-color: var(--bg); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 40px 40px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 18px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.card.sel { border-color: var(--track); }
+.card .head { display: flex; justify-content: space-between; align-items: center; gap: 10px; cursor: pointer; }
+.card .task { font-size: .88rem; color: var(--fg); margin-top: -4px; }
+.card .foot { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; }
+.card .prog { height: 2px; background: var(--line); border-radius: 1px; overflow: hidden; } .card .prog i { display: block; height: 100%; background: var(--green); }
+.card.hub svg.mini { background: var(--hub); border-radius: 10px; }
+.card.hub { border-color: transparent; }
+svg.mini { width: 100%; height: auto; max-height: 300px; display: block; }
+.key { display: inline-flex; align-items: center; gap: 7px; font-size: .78rem; color: var(--muted); }
+.key svg { flex: none; }
+svg.graph text { font-family: var(--mono); fill: var(--fg); }
+svg.graph .track { fill: none; stroke: var(--track); stroke-width: 1.6; }
+svg.graph .live { fill: none; stroke: var(--green); stroke-width: 1.8; stroke-dasharray: 6 5; }
+svg.graph .loop { fill: none; stroke: var(--blue); stroke-width: 1.3; stroke-dasharray: 1.5 4; stroke-linecap: round; }
+svg.graph .track.dim, svg.graph .live.dim, svg.graph .loop.dim { opacity: .14; }
+svg.graph .live.path { stroke: var(--green-d); stroke-width: 2.6; stroke-dasharray: none; }
 svg.graph .node { cursor: pointer; }
-svg.graph .node:hover .nbox { stroke: var(--accent); }
-svg.graph .node.err .nbox { stroke: var(--bad); stroke-width: 1.8; fill: var(--bad-soft); }
-svg.graph .node.run .nbox { stroke: var(--warn); stroke-dasharray: 5 3; stroke-width: 1.8; }
-svg.graph .node.sel .nbox { stroke: var(--accent); stroke-width: 3; }
-svg.graph .node.dim { opacity: 0.28; }
-svg.graph .node.path .nbox { stroke: var(--accent); stroke-width: 2.2; }
-svg.graph .node.cur .nbox { animation: pulse 1.1s ease-out 1; }
-svg.graph .ghost { fill: none; stroke: var(--line); stroke-dasharray: 2 4; opacity: 0.7; }
-svg.graph .edge { fill: none; stroke: var(--muted); stroke-width: 1.3; opacity: 0.8; }
-svg.graph .edge.dim { opacity: 0.15; }
-svg.graph .edge.path { stroke: var(--accent); stroke-width: 2.2; opacity: 1; }
-svg.graph .cite { fill: none; stroke: var(--accent); stroke-width: 1.3; stroke-dasharray: 4 3; opacity: 0.75; }
-svg.graph .cite.dim { opacity: 0.12; }
-svg.graph .nl { font-size: 11.5px; font-weight: 600; }
-svg.graph .ns { font-size: 10px; fill: var(--muted); font-family: var(--mono); }
-svg.graph .nb { font: 700 11px var(--mono); fill: var(--bg); }
-@keyframes pulse { from { filter: drop-shadow(0 0 7px var(--accent)); } to { filter: none; } }
-@media (prefers-reduced-motion: reduce) { svg.graph .node.cur .nbox { animation: none; } }
-section#inspector { border-left: 1px solid var(--line); background: var(--surface); display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+svg.graph .node circle.c { fill: var(--card); stroke: var(--blue); stroke-width: 1.6; }
+svg.graph .node.k-tool circle.c, svg.graph .node.k-query circle.c { stroke: var(--green); }
+svg.graph .node.k-evidence circle.c { fill: var(--green); stroke: var(--green); }
+svg.graph .node.k-answer circle.c { fill: var(--green-d); stroke: var(--green-d); }
+svg.graph .node.k-answer circle.ring { fill: none; stroke: var(--green-d); stroke-width: 1.4; }
+svg.graph .node.k-agent circle.ring { fill: none; stroke: var(--blue); stroke-width: 1.6; }
+svg.graph .node.k-agent circle.c { stroke: none; fill: var(--blue); }
+svg.graph .node.k-think circle.c, svg.graph .node.k-plan circle.c { stroke: var(--muted); }
+svg.graph .node.err circle.c { stroke: var(--red); fill: var(--red-soft); stroke-width: 2; }
+svg.graph .node.run circle.c { stroke: var(--amber); stroke-dasharray: 3 2.5; stroke-width: 2; }
+svg.graph .node:hover circle.c { stroke-width: 2.6; }
+svg.graph .node.sel .halo { stroke: var(--green); }
+svg.graph .halo { fill: none; stroke: transparent; stroke-width: 1.6; }
+svg.graph .node.dim { opacity: .3; }
+svg.graph .node.path circle.c { stroke-width: 2.4; }
+svg.graph .ghost { fill: none; stroke: var(--track); stroke-dasharray: 1.5 3; opacity: .8; }
+svg.graph .lbl-k { font-size: 9px; letter-spacing: .09em; fill: var(--muted); text-transform: uppercase; }
+svg.graph .lbl-t { font-size: 11.5px; }
+svg.graph .lbl-s { font-size: 9.5px; fill: var(--muted); }
+svg.graph .pulse { fill: var(--green); offset-rotate: 0deg; animation: travel .9s ease-out 1 both; }
+@keyframes travel { from { offset-distance: 0%; opacity: 1; } to { offset-distance: 100%; opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { svg.graph .pulse { display: none; } }
+svg.hubsvg .spoke { fill: none; stroke: var(--fg); stroke-opacity: .55; stroke-linecap: round; }
+svg.hubsvg .spoke.err { stroke: var(--red); stroke-opacity: 1; stroke-dasharray: 5 4; }
+svg.hubsvg .spoke.live { stroke: var(--green-d); stroke-opacity: 1; }
+svg.hubsvg .end { fill: var(--card); stroke: var(--fg); stroke-width: 1.6; }
+svg.hubsvg .end.err { stroke: var(--red); }
+svg.hubsvg .core { fill: var(--card); stroke: var(--fg); stroke-width: 2.4; }
+svg.hubsvg text { font-family: var(--mono); fill: var(--fg); }
+svg.hubsvg .hn { font-size: 11px; font-weight: 600; } svg.hubsvg .hm { font-size: 9.5px; fill: var(--muted); }
+section#inspector { border-left: 1px solid var(--line); background: var(--card); display: flex; flex-direction: column; min-height: 0; min-width: 0; }
 .tabs { display: flex; border-bottom: 1px solid var(--line); }
-.tabs button { border: 0; border-radius: 0; background: none; padding: 9px 14px; border-bottom: 2px solid transparent; }
-.tabs button.on { background: none; color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
-.pane { flex: 1; overflow: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
-.pane h3 { margin: 0; font-size: 0.95rem; overflow-wrap: anywhere; }
-.pane h5 { margin: 6px 0 2px; font: 600 0.68rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-.pane pre { margin: 0; padding: 8px; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; white-space: pre-wrap; overflow-wrap: anywhere; font: 12px/1.45 var(--mono); max-height: 240px; overflow: auto; }
-.kv { display: grid; grid-template-columns: 90px 1fr; gap: 3px 10px; font-size: 0.82rem; }
-.kv dt { color: var(--muted); } .kv dd { margin: 0; overflow-wrap: anywhere; }
-a.lnk, button.lnk { color: var(--accent); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; font-family: var(--mono); font-size: 0.8rem; }
-table { border-collapse: collapse; width: 100%; font-size: 0.8rem; }
-th, td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
-th { font: 600 0.66rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); position: sticky; top: 0; background: var(--surface); }
-tr.future td { opacity: 0.35; }
-tr.curr td { background: var(--accent-soft); }
-tr.log { cursor: pointer; }
-.tablewrap { overflow: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
-.empty { color: var(--muted); padding: 20px; text-align: center; }
+.tabs button { border: 0; border-radius: 0; background: none; padding: 11px 16px; border-bottom: 2px solid transparent; font: 500 10.5px var(--mono); letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.tabs button.on { color: var(--fg); border-bottom-color: var(--green); }
+.pane { flex: 1; overflow: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+.pane h3 { margin: 0; font-size: 1rem; font-weight: 600; overflow-wrap: anywhere; }
+.pane h5 { margin: 8px 0 3px; font: 500 10px var(--mono); letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.pane pre { margin: 0; padding: 10px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; white-space: pre-wrap; overflow-wrap: anywhere; font: 11.5px/1.5 var(--mono); max-height: 240px; overflow: auto; }
+.kv { display: grid; grid-template-columns: 78px 1fr; gap: 4px 10px; font-size: .82rem; margin: 0; }
+.kv dt { color: var(--muted); font: 10.5px var(--mono); letter-spacing: .06em; text-transform: uppercase; padding-top: 2px; } .kv dd { margin: 0; overflow-wrap: anywhere; }
+button.lnk { color: var(--blue); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; font: 12px var(--mono); }
+table { border-collapse: collapse; width: 100%; font-size: .8rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 500 10px var(--mono); letter-spacing: .09em; text-transform: uppercase; color: var(--muted); position: sticky; top: 0; background: var(--card); }
+tr.future td { opacity: .35; } tr.curr td { background: var(--hub); } tr.log { cursor: pointer; }
+.tablewrap { overflow: auto; background: var(--card); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); }
+.empty { color: var(--muted); padding: 24px 8px; text-align: center; font-size: .88rem; }
 .digest { word-break: break-all; font: 11px var(--mono); }
-@media (max-width: 1100px) { .app { grid-template-columns: 220px minmax(0, 1fr); } section#inspector { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--line); max-height: 45vh; } }
-@media (max-width: 720px) { .app { grid-template-columns: 1fr; } aside#runs { flex-direction: row; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--line); } .run-card { min-width: 220px; } }
+@media (max-width: 1100px) { .app { grid-template-columns: 210px minmax(0, 1fr); } section#inspector { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--line); max-height: 45vh; } }
+@media (max-width: 720px) { .app { grid-template-columns: 1fr; } aside#runs { display: flex; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--line); } .run-card { min-width: 210px; } header.top .sub { margin-left: 0; } }
 </style>
 </head>
 <body>
 <header class="top">
-  <h1 id="title"></h1>
+  <div class="brand"><b>&gt;_</b><h1 id="title"></h1></div>
   <div class="sub" id="topmeta"></div>
 </header>
 <div class="app">
@@ -131,7 +148,7 @@ tr.log { cursor: pointer; }
   <main>
     <div class="bar">
       <div class="seg" id="viewSeg" role="group" aria-label="View">
-        <button data-v="compare">Compare</button><button data-v="run">Single run</button><button data-v="summary">Summary</button>
+        <button data-v="compare">Compare</button><button data-v="hub">Hub</button><button data-v="run">Run</button><button data-v="summary">Summary</button>
       </div>
       <div class="ctl" id="ctl">
         <button id="bFirst" title="Start (Home)" aria-label="Go to start">&#9198;</button>
@@ -143,9 +160,8 @@ tr.log { cursor: pointer; }
         <select id="speed" aria-label="Speed"><option value="1400">0.5x</option><option value="700" selected>1x</option><option value="350">2x</option><option value="150">5x</option></select>
         <span class="pos" id="posLabel"></span>
       </div>
-      <label class="muted" style="font-size:0.8rem"><input type="checkbox" id="pathOn" checked> highlight path to selection</label>
+      <label class="opt"><input type="checkbox" id="pathOn" checked> highlight path to selection</label>
     </div>
-    <div class="legend" id="legend"></div>
     <div class="stage" id="stage" tabindex="0"></div>
   </main>
   <section id="inspector" aria-label="Inspector">
@@ -159,13 +175,10 @@ tr.log { cursor: pointer; }
 var DATA = /*__AGENTGRAPH_DATA__*/null;
 var $ = function (s, r) { return (r || document).querySelector(s); };
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function clip(s, n) { s = String(s); return s.length > n ? s.slice(0, n - 1) + '…' : s; }
 
-var KIND = {
-  task: ['T', 'Task'], plan: ['P', 'Plan'], think: ['R', 'Reasoning'], tool: ['F', 'Tool call'], query: ['Q', 'Data query'],
-  model: ['M', 'Model call'], agent: ['S', 'Sub-agent'], evidence: ['E', 'Evidence'], decision: ['D', 'Decision'], answer: ['A', 'Answer'], error: ['!', 'Error']
-};
-function kindInfo(k) { return KIND[k] || ['?', k]; }
-function kindColor(k) { return 'var(--k-' + (KIND[k] ? k : 'unknown') + ')'; }
+var KIND = { task: 'Task', plan: 'Plan', think: 'Reasoning', tool: 'Tool call', query: 'Data query', model: 'Model call', agent: 'Sub-agent', evidence: 'Evidence', decision: 'Decision', answer: 'Answer', error: 'Error' };
+function kindName(k) { return KIND[k] || k; }
 
 /* ---------- SHA-256 (WebCrypto when available, pure JS otherwise) ---------- */
 var K256 = [], H256 = [];
@@ -310,114 +323,171 @@ function stats(run) {
 function fmtMs(ms) { return ms == null ? '-' : ms < 1000 ? ms + ' ms' : (ms / 1000).toFixed(1) + ' s'; }
 function rel(run, ts) { return '+' + ((ts - run.t0) / 1000).toFixed(1) + 's'; }
 
-/* ---------- graph drawing ---------- */
-var NW = 164, NH = 44, CW = 184, RH = 74, PAD = 14;
+/* ---------- flow graph: hollow nodes on a thin track ---------- */
+var CW = 214, RH = 60, PAD = 26;
+function nodeR(k, mini) { var r = k === 'agent' ? 11 : k === 'answer' ? 8 : k === 'evidence' ? 5 : 7; return mini ? r * 1.45 : r; }
 function pathSet(st, id) {
   var seen = new Set(), q = [id];
   while (q.length) { var x = q.pop(); if (seen.has(x)) continue; seen.add(x); var n = st.nodes.get(x); if (!n) continue;
     if (n.parent) q.push(n.parent); n.cites.forEach(function (c) { q.push(c); }); }
   return seen;
 }
-function drawGraph(run, st, o) {
-  var lay = run.layout, w = run.cols * CW + PAD * 2, h = run.rows * RH + PAD * 2 - (RH - NH - 14);
-  function X(id) { return PAD + lay.get(id).x * CW; } function Y(id) { return PAD + lay.get(id).d * RH; }
+function drawFlow(run, st, o) {
+  var lay = run.layout, mini = !!o.mini;
+  var w = run.cols * CW + PAD * 2 + 20, h = run.rows * RH + PAD * 2 - 14;
+  function X(id) { return PAD + 8 + lay.get(id).x * CW; } function Y(id) { return PAD + 8 + lay.get(id).d * RH; }
   var path = o.sel && o.pathOn && st.nodes.has(o.sel) ? pathSet(st, o.sel) : null;
   var curId = null, curT = -1; st.nodes.forEach(function (n) { if (n.touched > curT) { curT = n.touched; curId = n.id; } });
-  var out = [];
+  var tr = [], lv = [], lp = [], nd = [], pulse = '', sw = mini ? 2.1 : 1;
   run.final.nodes.forEach(function (fn) {
-    if (!st.nodes.has(fn.id)) out.push('<rect class="ghost" x="' + X(fn.id) + '" y="' + Y(fn.id) + '" width="' + NW + '" height="' + NH + '" rx="5"/>');
+    if (!st.nodes.has(fn.id)) nd.push('<circle class="ghost" cx="' + X(fn.id) + '" cy="' + Y(fn.id) + '" r="' + (mini ? 8 : 4) + '" style="stroke-width:' + (mini ? 2.4 : 1) + '"/>');
   });
   st.nodes.forEach(function (n) {
     if (n.parent && st.nodes.has(n.parent)) {
-      var x1 = X(n.parent) + NW / 2, y1 = Y(n.parent) + NH, x2 = X(n.id) + NW / 2, y2 = Y(n.id);
-      var cls = 'edge' + (path ? (path.has(n.id) && path.has(n.parent) ? ' path' : ' dim') : '');
-      out.push('<path class="' + cls + '" d="M' + x1 + ' ' + y1 + 'C' + x1 + ' ' + (y1 + 26) + ',' + x2 + ' ' + (y2 - 26) + ',' + x2 + ' ' + y2 + '"/>');
+      var x1 = X(n.parent), y1 = Y(n.parent) + nodeR(st.nodes.get(n.parent).kind, mini), x2 = X(n.id), y2 = Y(n.id) - nodeR(n.kind, mini);
+      var d = 'M' + x1 + ' ' + y1 + 'C' + x1 + ' ' + (y1 + 24) + ',' + x2 + ' ' + (y2 - 24) + ',' + x2 + ' ' + y2;
+      var onPath = path && path.has(n.id) && path.has(n.parent), dim = path && !onPath ? ' dim' : '';
+      tr.push('<path class="track' + dim + '" style="stroke-width:' + 1.6 * sw + '" d="' + d + '"/>');
+      lv.push('<path class="live' + (onPath ? ' path' : '') + dim + '" style="stroke-width:' + (onPath ? 2.6 : 1.8) * sw + (mini ? ';stroke-dasharray:14 10' : '') + '" d="' + d + '"/>');
+      if (o.pulse && n.id === curId && !mini) pulse = '<circle class="pulse" r="4" style="offset-path:path(\'' + d + '\')"/>';
     }
     n.cites.forEach(function (c) {
       if (!st.nodes.has(c) || c === n.parent) return;
-      var x1 = X(c) + NW, y1 = Y(c) + NH / 2, x2 = X(n.id), y2 = Y(n.id) + NH / 2;
-      var cls = 'cite' + (path ? (path.has(n.id) && path.has(c) ? '' : ' dim') : '');
-      out.push('<path class="' + cls + '" d="M' + x1 + ' ' + y1 + 'C' + (x1 + 40) + ' ' + y1 + ',' + (x2 - 40) + ' ' + y2 + ',' + x2 + ' ' + y2 + '"/>');
+      var x1 = X(c) + nodeR(st.nodes.get(c).kind, mini), y1 = Y(c), x2 = X(n.id) - nodeR(n.kind, mini), y2 = Y(n.id);
+      var onPath = path && path.has(n.id) && path.has(c);
+      lp.push('<path class="loop' + (path && !onPath ? ' dim' : '') + '" style="stroke-width:' + 1.3 * sw + (mini && !path ? ';opacity:.4' : '') + '" d="M' + x1 + ' ' + y1 + 'C' + (x1 + 46) + ' ' + y1 + ',' + (x2 - 46) + ' ' + y2 + ',' + x2 + ' ' + y2 + '"/>');
     });
   });
   st.nodes.forEach(function (n) {
-    var x = X(n.id), y = Y(n.id), ki = kindInfo(n.kind);
-    var cls = 'node' + (n.status === 'error' ? ' err' : n.status === 'running' ? ' run' : '') + (o.sel === n.id ? ' sel' : '') +
-      (path ? (path.has(n.id) ? ' path' : ' dim') : '') + (n.id === curId && o.pulse ? ' cur' : '');
-    if (o.mini) {
-      out.push('<g class="' + cls + '" data-id="' + esc(n.id) + '"><rect class="nbox" x="' + x + '" y="' + y + '" width="' + NW + '" height="' + NH + '" rx="5" style="fill:' + (n.status === 'error' ? 'var(--bad-soft)' : 'var(--surface)') + '"/><rect x="' + x + '" y="' + y + '" width="' + NH + '" height="' + NH + '" rx="5" style="fill:' + kindColor(n.kind) + '"/><title>' + esc(ki[1] + ': ' + n.label) + '</title></g>');
-    } else {
-      var label = n.label.length > 24 ? n.label.slice(0, 23) + '…' : n.label;
-      var sub = (n.status === 'running' ? 'running' : n.status) + (n.dur != null ? ' · ' + fmtMs(n.dur) : '');
-      out.push('<g class="' + cls + '" data-id="' + esc(n.id) + '"><rect class="nbox" x="' + x + '" y="' + y + '" width="' + NW + '" height="' + NH + '" rx="5"/>' +
-        '<rect x="' + (x + 6) + '" y="' + (y + 11) + '" width="22" height="22" rx="4" style="fill:' + kindColor(n.kind) + '"/><text class="nb" x="' + (x + 17) + '" y="' + (y + 26) + '" text-anchor="middle">' + esc(ki[0]) + '</text>' +
-        '<text class="nl" x="' + (x + 36) + '" y="' + (y + 19) + '">' + esc(label) + '</text><text class="ns" x="' + (x + 36) + '" y="' + (y + 34) + '">' + esc(n.id + ' · ' + sub) + '</text><title>' + esc(ki[1] + ': ' + n.label) + '</title></g>');
+    var x = X(n.id), y = Y(n.id), r = nodeR(n.kind, mini);
+    var cls = 'node k-' + n.kind + (n.status === 'error' ? ' err' : n.status === 'running' ? ' run' : '') + (o.sel === n.id ? ' sel' : '') + (path ? (path.has(n.id) ? ' path' : ' dim') : '');
+    var g = '<g class="' + cls + '" data-id="' + esc(n.id) + '"><circle class="halo" cx="' + x + '" cy="' + y + '" r="' + (r + (mini ? 6 : 5)) + '" style="stroke-width:' + 1.6 * sw + '"/>';
+    if (n.kind === 'agent') g += '<circle class="ring" cx="' + x + '" cy="' + y + '" r="' + r + '" style="stroke-width:' + 1.6 * sw + '"/><circle class="c" cx="' + x + '" cy="' + y + '" r="' + (r * 0.36) + '"/>';
+    else if (n.kind === 'answer') g += '<circle class="ring" cx="' + x + '" cy="' + y + '" r="' + r + '" style="stroke-width:' + 1.4 * sw + '"/><circle class="c" cx="' + x + '" cy="' + y + '" r="' + (r * 0.55) + '"/>';
+    else g += '<circle class="c" cx="' + x + '" cy="' + y + '" r="' + r + '" style="stroke-width:' + (n.status === 'error' || n.status === 'running' ? 2 : 1.6) * sw + '"/>';
+    if (!mini) {
+      var sub = n.status === 'ok' ? '' : n.status; sub += (n.dur != null ? (sub ? ' · ' : '') + fmtMs(n.dur) : '');
+      g += '<text class="lbl-k" x="' + (x + r + 10) + '" y="' + (y - 7) + '">' + esc(kindName(n.kind) + ' · ' + n.id) + '</text><text class="lbl-t" x="' + (x + r + 10) + '" y="' + (y + 7) + '">' + esc(clip(n.label, 27)) + '</text>' +
+        (sub ? '<text class="lbl-s" x="' + (x + r + 10) + '" y="' + (y + 20) + '">' + esc(sub) + '</text>' : '');
     }
+    g += '<title>' + esc(kindName(n.kind) + ': ' + n.label) + '</title></g>';
+    nd.push(g);
   });
-  return { w: w, h: h, body: out.join('') };
+  return { w: w, h: h, body: tr.join('') + lv.join('') + lp.join('') + pulse + nd.join('') };
+}
+
+/* ---------- hub: the agent at the centre, what it reached for around it ---------- */
+function groupKey(n) {
+  if (n.kind === 'model') return 'model call';
+  if (n.kind !== 'tool' && n.kind !== 'query' && n.kind !== 'agent') return null;
+  var t = n.kind === 'tool' && n.data && n.data.tool ? String(n.data.tool) : n.label.indexOf(':') > 0 ? n.label.split(':')[0] : n.label.split(' ')[0];
+  return clip(t.trim().toLowerCase(), 16);
+}
+function drawHub(run, st, o) {
+  var groups = {}, order = [], internal = 0, curId = null, curT = -1;
+  st.nodes.forEach(function (n) {
+    if (n.touched > curT) { curT = n.touched; curId = n.id; }
+    var k = groupKey(n); if (!k) { internal++; return; }
+    if (!groups[k]) { groups[k] = { name: k, kind: n.kind, count: 0, err: 0, run: 0, last: -1 }; order.push(k); }
+    var g = groups[k]; g.count++; if (n.status === 'error') g.err++; if (n.status === 'running') g.run++; g.last = Math.max(g.last, n.touched);
+  });
+  var list = order.map(function (k) { return groups[k]; }).sort(function (a, b) { return b.count - a.count; });
+  if (list.length > 8) { var rest = list.slice(7), m = { name: '+' + rest.length + ' more', count: 0, err: 0, run: 0, last: -1 }; rest.forEach(function (g) { m.count += g.count; m.err += g.err; m.last = Math.max(m.last, g.last); }); list = list.slice(0, 7).concat([m]); }
+  var cx = 270, cy = 170, rx = 188, ry = 108, out = [], lbl = [];
+  var curGroup = curId && st.nodes.has(curId) ? groupKey(st.nodes.get(curId)) : null;
+  list.forEach(function (g, i) {
+    var a = -Math.PI / 2 + (i / list.length) * Math.PI * 2, ex = cx + Math.cos(a) * rx, ey = cy + Math.sin(a) * ry;
+    var sx = cx + Math.cos(a) * 46, sy = cy + Math.sin(a) * 46;
+    var live = g.name === curGroup;
+    out.push('<path class="spoke' + (g.err ? ' err' : '') + (live ? ' live' : '') + '" style="stroke-width:' + (1.4 + Math.min(g.count, 6) * 0.45) + '" d="M' + sx.toFixed(1) + ' ' + sy.toFixed(1) + 'L' + (ex - Math.cos(a) * 7).toFixed(1) + ' ' + (ey - Math.sin(a) * 7).toFixed(1) + '"/>');
+    out.push('<circle class="end' + (g.err ? ' err' : '') + '" cx="' + ex.toFixed(1) + '" cy="' + ey.toFixed(1) + '" r="7"/>');
+    var c = Math.cos(a), anchor = Math.abs(c) < 0.25 ? 'middle' : c > 0 ? 'start' : 'end', lx = ex + (anchor === 'middle' ? 0 : c > 0 ? 14 : -14), ly = Math.abs(c) < 0.25 ? (Math.sin(a) < 0 ? ey - 24 : ey + 24) : ey - 2;
+    lbl.push('<text class="hn" text-anchor="' + anchor + '" x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '">' + esc(g.name) + '</text><text class="hm" text-anchor="' + anchor + '" x="' + lx.toFixed(1) + '" y="' + (ly + 13).toFixed(1) + '">' + esc(g.count + (g.count === 1 ? ' call' : ' calls') + (g.err ? ' · ' + g.err + ' failed' : '')) + '</text>');
+  });
+  if (!list.length) lbl.push('<text class="hm" text-anchor="middle" x="' + cx + '" y="' + (cy + 64) + '">no tool or data calls yet</text>');
+  var core = '<circle class="core" cx="' + cx + '" cy="' + cy + '" r="46"/><text class="hn" style="font-size:10px" text-anchor="middle" x="' + cx + '" y="' + (cy - 2) + '">' + esc(clip(run.agent, 13)) + '</text><text class="hm" text-anchor="middle" x="' + cx + '" y="' + (cy + 13) + '">' + st.nodes.size + ' steps</text>';
+  return { w: 540, h: 340, body: out.join('') + core + lbl.join('') };
 }
 
 /* ---------- app state ---------- */
-var S = { view: 'compare', runId: null, pos: {}, tick: 0, sel: null, selRun: null, tab: 'node', playing: false, timer: null, pathOn: true };
+var S = { view: 'compare', runId: null, pos: {}, tick: 0, sel: null, selRun: null, tab: 'node', playing: false, timer: null, pathOn: true, fit: null, reveal: false };
 function run() { return RUNS.filter(function (r) { return r.id === S.runId; })[0] || RUNS[0]; }
 function maxN() { return Math.max.apply(null, RUNS.map(function (r) { return r.events.length; })); }
-function posOf(r) { return S.view === 'compare' ? Math.min(S.tick, r.events.length) : (S.pos[r.id] == null ? r.events.length : S.pos[r.id]); }
+function isMulti() { return S.view === 'compare' || S.view === 'hub'; }
+function posOf(r) { return isMulti() ? Math.min(S.tick, r.events.length) : (S.pos[r.id] == null ? r.events.length : S.pos[r.id]); }
+function outcomeOf(r, st, p) { return st.end ? st.end.outcome : (p >= r.events.length ? 'running' : 'replaying'); }
 
-function renderLegend() {
-  var used = {}; RUNS.forEach(function (r) { r.final.nodes.forEach(function (n) { used[n.kind] = 1; }); });
-  $('#legend').innerHTML = Object.keys(KIND).filter(function (k) { return used[k]; }).map(function (k) {
-    return '<span><i style="background:' + kindColor(k) + '">' + KIND[k][0] + '</i>' + KIND[k][1] + '</span>';
-  }).join('') + '<span><svg width="30" height="8" aria-hidden="true"><path d="M0 4H30" stroke="var(--accent)" stroke-dasharray="4 3" stroke-width="1.5" fill="none"/></svg> cites evidence</span>' +
-    '<span><i style="background:transparent;border:1.5px dashed var(--warn)"></i>running</span><span><i style="background:var(--bad-soft);border:1.5px solid var(--bad)"></i>error</span>';
+function keyLine(cls, label) {
+  var st = cls === 'live' ? 'stroke:var(--green);stroke-dasharray:6 5;stroke-width:1.8' : 'stroke:var(--blue);stroke-dasharray:1.5 4;stroke-width:1.5;stroke-linecap:round';
+  return '<span class="key"><svg width="26" height="8" aria-hidden="true"><path d="M1 4H25" style="' + st + '" fill="none"/></svg>' + label + '</span>';
 }
+function dotKey(inner, label) { return '<span class="key"><svg width="18" height="16" aria-hidden="true">' + inner + '</svg>' + label + '</span>'; }
+function flowLegend(r) {
+  var used = {}; (r ? [r] : RUNS).forEach(function (x) { x.final.nodes.forEach(function (n) { used[n.kind] = 1; }); });
+  return keyLine('live', 'executed path') + keyLine('loop', 'evidence cited') +
+    dotKey('<circle cx="9" cy="8" r="6" fill="none" stroke="var(--green)" stroke-width="1.6"/>', 'tool / data') +
+    dotKey('<circle cx="9" cy="8" r="6" fill="none" stroke="var(--blue)" stroke-width="1.6"/>', 'reasoning') +
+    (used.agent ? dotKey('<circle cx="9" cy="8" r="7" fill="none" stroke="var(--blue)" stroke-width="1.6"/><circle cx="9" cy="8" r="2.6" fill="var(--blue)"/>', 'sub-agent') : '') +
+    (used.evidence ? dotKey('<circle cx="9" cy="8" r="4" fill="var(--green)"/>', 'evidence') : '') +
+    (used.answer ? dotKey('<circle cx="9" cy="8" r="7" fill="none" stroke="var(--green-d)" stroke-width="1.4"/><circle cx="9" cy="8" r="4" fill="var(--green-d)"/>', 'answer') : '') +
+    dotKey('<circle cx="9" cy="8" r="6" fill="var(--red-soft)" stroke="var(--red)" stroke-width="2"/>', 'failed');
+}
+
 function renderRuns() {
   $('#runs').innerHTML = RUNS.map(function (r) {
     var s = r.stats, v = r.verify;
-    return '<button class="run-card' + (r.id === S.runId ? ' sel' : '') + '" data-run="' + esc(r.id) + '"><b>' + esc(r.agent) + '</b><span class="t">' + esc(r.task) + '</span>' +
-      '<span class="meta"><span class="chip ' + esc(s.outcome) + '">' + esc(s.outcome) + '</span><span>' + s.steps + ' steps</span><span>' + fmtMs(s.dur) + '</span>' +
-      '<span class="chip ' + (v.done ? (v.ok ? 'ok' : 'bad') : '') + '" title="Hash chain">' + (v.done ? (v.ok ? 'chain ok' : 'tampered') : 'checking') + '</span></span></button>';
+    return '<button class="run-card' + (r.id === S.runId ? ' sel' : '') + '" data-run="' + esc(r.id) + '"><b>' + esc(r.agent) + '</b><span class="status ' + esc(s.outcome) + '">' + esc(s.outcome) + '</span><span class="t">' + esc(r.task) + '</span>' +
+      '<span class="meta micro"><span>' + s.steps + ' steps</span><span>' + fmtMs(s.dur) + '</span><span class="status ' + (v.done ? (v.ok ? 'verified' : 'bad') : '') + '" title="Hash chain">' + (v.done ? (v.ok ? 'chain ok' : 'tampered') : 'checking') + '</span></span></button>';
   }).join('');
 }
 function renderTop() {
   $('#title').textContent = DATA.title;
   var allDone = RUNS.every(function (r) { return r.verify.done; }), allOk = RUNS.every(function (r) { return r.verify.ok; });
-  $('#topmeta').innerHTML = '<span>' + RUNS.length + ' runs</span><span>generated ' + esc(DATA.generated) + ' by AgentGraph ' + esc(DATA.version) + '</span>' +
-    '<span class="chip ' + (allDone ? (allOk ? 'ok' : 'bad') : '') + '" id="integrity">' + (allDone ? (allOk ? 'all hash chains verified in this browser' : 'INTEGRITY FAILURE: see Audit tab') : 'verifying…') + '</span>' +
-    (RUNS.some(function (r) { return r.meta && r.meta.simulated; }) ? '<span class="chip warn">simulated runs</span>' : '');
+  $('#topmeta').innerHTML = '<span>' + RUNS.length + ' runs · generated ' + esc(DATA.generated) + ' · AgentGraph ' + esc(DATA.version) + '</span>' +
+    (RUNS.some(function (r) { return r.meta && r.meta.simulated; }) ? '<span class="status warn">simulated runs</span>' : '') +
+    '<span class="status ' + (allDone ? (allOk ? 'verified' : 'bad') : '') + '" id="integrity">' + (allDone ? (allOk ? 'all hash chains verified in this browser' : 'integrity failure: see Audit tab') : 'verifying…') + '</span>';
+}
+function cardHead(r, st, p) {
+  var oc = outcomeOf(r, st, p);
+  return '<div class="head" data-open="' + esc(r.id) + '"><span class="micro">Agent run · ' + esc(r.agent) + '</span><span class="status ' + (oc === 'replaying' ? 'running' : esc(oc)) + '">' + esc(oc) + '</span></div><div class="task">' + esc(r.task) + '</div>';
 }
 function renderStage() {
   var st = $('#stage'), keep = st.scrollTop;
   if (S.view === 'summary') { st.innerHTML = summaryHtml(); return; }
   if (S.view === 'run') {
-    var r = run(), p = posOf(r), s = stateAt(r, p), g = drawGraph(r, s, { sel: S.selRun === r.id ? S.sel : null, pathOn: S.pathOn, pulse: true });
-    var avail = Math.max(st.clientWidth - 24, 320), fit = S.fit == null ? (g.w <= avail * 2.2 && !r.folded) : S.fit;
-    var size = fit ? 'style="width:100%;height:auto;max-width:' + Math.max(g.w, avail) + 'px"' : 'width="' + g.w + '" height="' + g.h + '"';
-    st.innerHTML = '<div class="card" style="margin-bottom:12px"><header><b>' + esc(r.agent) + '</b><span><button data-zoom="1" aria-pressed="' + fit + '" title="Scale the graph to the window">Fit</button> <span class="chip ' + esc(s.end ? s.end.outcome : 'running') + '">' + esc(s.end ? s.end.outcome : 'running') + '</span></span></header><div class="task">' + esc(r.task) +
-      '</div></div><svg class="graph" data-run="' + esc(r.id) + '" ' + size + ' viewBox="0 0 ' + g.w + ' ' + g.h + '" role="img" aria-label="Workflow graph of ' + esc(r.agent) + ' at event ' + p + '">' + g.body + '</svg>';
+    var r = run(), p = posOf(r), s = stateAt(r, p), g = drawFlow(r, s, { sel: S.selRun === r.id ? S.sel : null, pathOn: S.pathOn, pulse: true });
+    var avail = Math.max(st.clientWidth - 76, 320), fit = S.fit == null ? (g.w <= avail * 2.2 && !r.folded) : S.fit;
+    var size = fit ? 'style="width:100%;height:auto;max-width:' + g.w + 'px"' : 'width="' + g.w + '" height="' + g.h + '"';
+    st.innerHTML = '<div class="card"><div class="head" style="cursor:default"><span class="micro">Agent run · ' + esc(r.agent) + ' · ' + esc(r.model || 'model n/a') + '</span><span style="display:flex;gap:12px;align-items:center"><button data-zoom="1" aria-pressed="' + fit + '" title="Scale the graph to the window">Fit</button><span class="status ' + (outcomeOf(r, s, p) === 'replaying' ? 'running' : esc(outcomeOf(r, s, p))) + '">' + esc(outcomeOf(r, s, p)) + '</span></span></div>' +
+      '<div class="task">' + esc(r.task) + '</div><div style="overflow:auto"><svg class="graph" data-run="' + esc(r.id) + '" ' + size + ' viewBox="0 0 ' + g.w + ' ' + g.h + '" role="img" aria-label="Workflow graph of ' + esc(r.agent) + ' at event ' + p + '">' + g.body + '</svg></div>' +
+      '<div class="foot">' + flowLegend(r) + '</div></div>';
     st.scrollTop = keep;
     if (S.reveal) { S.reveal = false; var selEl = st.querySelector('.node.sel'); if (selEl) selEl.scrollIntoView({ block: 'center', inline: 'center' }); }
     return;
   }
+  var hub = S.view === 'hub';
   st.innerHTML = '<div class="grid">' + RUNS.map(function (r) {
-    var p = posOf(r), s = stateAt(r, p), g = drawGraph(r, s, { mini: true, sel: S.selRun === r.id ? S.sel : null, pathOn: S.pathOn, pulse: true });
-    var strip = '', k = 0; r.events.forEach(function (e, i) { if (e.type === 'node') strip += '<i class="' + (i < p ? 'on' : '') + (i === p - 1 ? ' cur' : '') + '" style="--c:' + kindColor(e.kind) + '"></i>'; });
-    return '<div class="card' + (r.id === S.runId ? ' sel' : '') + '" data-run="' + esc(r.id) + '"><header data-open="' + esc(r.id) + '"><b>' + esc(r.agent) + '</b><span class="chip ' + esc(s.end ? s.end.outcome : 'running') + '">' + esc(s.end ? s.end.outcome : (p >= r.events.length ? 'done' : 'running')) + '</span></header>' +
-      '<div class="task">' + esc(r.task) + '</div><svg class="graph mini" data-run="' + esc(r.id) + '" viewBox="0 0 ' + g.w + ' ' + g.h + '" preserveAspectRatio="xMidYMin meet" role="img" aria-label="Graph of ' + esc(r.agent) + '">' + g.body + '</svg>' +
-      '<div class="strip" aria-hidden="true">' + strip + '</div><div class="muted mono" style="font-size:0.72rem">event ' + p + ' / ' + r.events.length + '</div></div>';
-  }).join('') + '</div>';
+    var p = posOf(r), s = stateAt(r, p), sel = S.selRun === r.id ? S.sel : null;
+    var g = hub ? drawHub(r, s, {}) : drawFlow(r, s, { mini: true, sel: sel, pathOn: S.pathOn, pulse: false });
+    var c = s.nodes.size, calls = 0, errs = 0; s.nodes.forEach(function (n) { if (n.kind === 'tool' || n.kind === 'query') calls++; if (n.status === 'error') errs++; });
+    return '<div class="card' + (hub ? ' hub' : '') + (r.id === S.runId ? ' sel' : '') + '" data-run="' + esc(r.id) + '">' + cardHead(r, s, p) +
+      '<svg class="graph mini' + (hub ? ' hubsvg' : '') + '" data-run="' + esc(r.id) + '" viewBox="0 0 ' + g.w + ' ' + g.h + '" preserveAspectRatio="xMidYMid meet" role="img" aria-label="' + (hub ? 'Hub map' : 'Graph') + ' of ' + esc(r.agent) + '">' + g.body + '</svg>' +
+      '<div class="prog"><i style="width:' + (r.events.length ? p / r.events.length * 100 : 0) + '%"></i></div>' +
+      '<div class="foot micro"><span>event ' + p + '/' + r.events.length + '</span><span>' + c + ' steps</span><span>' + calls + ' calls</span><span' + (errs ? ' style="color:var(--red)"' : '') + '>' + errs + ' failed</span></div></div>';
+  }).join('') + '</div>' + (hub ? '<div class="foot" style="margin-top:18px">' + keyLine('live', 'current call') + '<span class="key">line weight = number of calls</span><span class="key">dashed red = failures</span></div>' : '<div class="foot" style="margin-top:18px">' + flowLegend() + '</div>');
   st.scrollTop = keep;
 }
 function summaryHtml() {
   var cols = [['Agent', function (r) { return '<b>' + esc(r.agent) + '</b>'; }], ['Task', function (r) { return esc(r.task); }],
-    ['Outcome', function (r) { return '<span class="chip ' + esc(r.stats.outcome) + '">' + esc(r.stats.outcome) + '</span>'; }],
-    ['Steps', function (r) { return r.stats.steps; }], ['Tool/data calls', function (r) { return r.stats.tools; }], ['Errors', function (r) { return r.stats.errors; }],
-    ['Sub-agents', function (r) { return r.stats.agents; }], ['Depth', function (r) { return r.stats.depth; }], ['Max fan-out', function (r) { return r.stats.fanout; }],
-    ['Evidence cited', function (r) { return r.stats.cited; }], ['Duration', function (r) { return fmtMs(r.stats.dur); }],
-    ['Integrity', function (r) { return r.verify.done ? '<span class="chip ' + (r.verify.ok ? 'ok' : 'bad') + '">' + (r.verify.ok ? 'verified' : 'tampered') + '</span>' : '…'; }]];
-  var finals = RUNS.map(function (r) { var e = r.final.end; return e ? '<tr><td><b>' + esc(r.agent) + '</b></td><td colspan="11">' + esc(e.summary || '') + '</td></tr>' : ''; }).join('');
+    ['Outcome', function (r) { return '<span class="status ' + esc(r.stats.outcome) + '">' + esc(r.stats.outcome) + '</span>'; }],
+    ['Steps', function (r) { return r.stats.steps; }], ['Calls', function (r) { return r.stats.tools; }], ['Errors', function (r) { return r.stats.errors; }],
+    ['Sub-agents', function (r) { return r.stats.agents; }], ['Depth', function (r) { return r.stats.depth; }], ['Fan-out', function (r) { return r.stats.fanout; }],
+    ['Evidence', function (r) { return r.stats.cited; }], ['Duration', function (r) { return fmtMs(r.stats.dur); }],
+    ['Integrity', function (r) { return r.verify.done ? '<span class="status ' + (r.verify.ok ? 'verified' : 'bad') + '">' + (r.verify.ok ? 'verified' : 'tampered') + '</span>' : '…'; }]];
+  var finals = RUNS.map(function (r) { var e = r.final.end; return e ? '<tr><td><b>' + esc(r.agent) + '</b></td><td>' + esc(e.summary || '') + '</td></tr>' : ''; }).join('');
   return '<div class="tablewrap"><table><thead><tr>' + cols.map(function (c) { return '<th>' + c[0] + '</th>'; }).join('') + '</tr></thead><tbody>' +
-    RUNS.map(function (r) { return '<tr class="log" data-open="' + esc(r.id) + '">' + cols.map(function (c) { return '<td class="' + (typeof c[1](r) === 'number' ? 'mono' : '') + '">' + c[1](r) + '</td>'; }).join('') + '</tr>'; }).join('') +
-    '</tbody></table></div><h5 class="muted" style="font:600 0.68rem var(--mono);letter-spacing:.08em;text-transform:uppercase;margin:16px 0 6px">Run summaries</h5><div class="tablewrap"><table><tbody>' + finals + '</tbody></table></div>';
+    RUNS.map(function (r) { return '<tr class="log" data-open="' + esc(r.id) + '">' + cols.map(function (c) { var v = c[1](r); return '<td class="' + (typeof v === 'number' ? 'mono' : '') + '">' + v + '</td>'; }).join('') + '</tr>'; }).join('') +
+    '</tbody></table></div><div class="micro" style="margin:22px 0 8px">Run summaries</div><div class="tablewrap"><table><tbody>' + finals + '</tbody></table></div>';
 }
 function dataBlocks(d) {
   var keys = Object.keys(d || {}); if (!keys.length) return '<div class="muted">No payload recorded.</div>';
@@ -430,9 +500,8 @@ function renderPane() {
   var pane = $('#pane');
   if (S.tab === 'node') {
     var st = stateAt(r, posOf(r)), n = S.sel && st.nodes.get(S.sel);
-    if (!n) { pane.innerHTML = '<div class="empty">Click a node in the graph to see its inputs, outputs, timing and evidence links.</div>'; return; }
-    var ki = kindInfo(n.kind);
-    pane.innerHTML = '<div><span class="chip" style="background:' + kindColor(n.kind) + ';color:var(--bg)">' + esc(ki[1]) + '</span> <span class="chip ' + esc(n.status) + '">' + esc(n.status) + '</span></div><h3>' + esc(n.label) + '</h3>' +
+    if (!n) { pane.innerHTML = '<div class="empty">Select a node in the graph to see its inputs, outputs, timing and evidence links.</div>'; return; }
+    pane.innerHTML = '<div style="display:flex;gap:14px;align-items:center"><span class="micro">' + esc(kindName(n.kind)) + '</span><span class="status ' + esc(n.status) + '">' + esc(n.status) + '</span></div><h3>' + esc(n.label) + '</h3>' +
       '<dl class="kv"><dt>Run</dt><dd>' + esc(r.agent) + '</dd><dt>Node</dt><dd class="mono">' + esc(n.id) + '</dd><dt>Started</dt><dd class="mono">' + rel(r, n.ts) + '</dd><dt>Duration</dt><dd class="mono">' + fmtMs(n.dur) + '</dd>' +
       '<dt>Parent</dt><dd>' + (n.parent ? '<button class="lnk" data-sel="' + esc(n.parent) + '">' + esc(n.parent) + '</button>' : 'none (root)') + '</dd>' +
       '<dt>Cites</dt><dd>' + (n.cites.length ? n.cites.map(function (c) { return '<button class="lnk" data-sel="' + esc(c) + '">' + esc(c) + '</button>'; }).join(' ') : 'none') + '</dd>' +
@@ -447,33 +516,33 @@ function renderPane() {
   } else {
     pane.innerHTML = RUNS.map(function (x) {
       var v = x.verify;
-      return '<div class="card"><header><b>' + esc(x.agent) + '</b><span class="chip ' + (v.done ? (v.ok ? 'ok' : 'bad') : '') + '">' + (v.done ? (v.ok ? 'chain intact' : 'tampered') : 'checking') + '</span></header>' +
-        '<dl class="kv"><dt>File</dt><dd class="mono">' + esc(x.file) + '</dd><dt>Events</dt><dd class="mono">' + x.events.length + '</dd><dt>Head hash</dt><dd class="digest">' + esc(v.head || x.head || '') + '</dd></dl>' +
+      return '<div class="card" style="box-shadow:none;border-radius:12px;padding:14px"><div class="head" style="cursor:default"><b>' + esc(x.agent) + '</b><span class="status ' + (v.done ? (v.ok ? 'verified' : 'bad') : '') + '">' + (v.done ? (v.ok ? 'chain intact' : 'tampered') : 'checking') + '</span></div>' +
+        '<dl class="kv"><dt>File</dt><dd class="mono">' + esc(x.file) + '</dd><dt>Events</dt><dd class="mono">' + x.events.length + '</dd><dt>Head</dt><dd class="digest">' + esc(v.head || x.head || '') + '</dd></dl>' +
         (v.done && !v.ok ? '<pre>' + esc(v.errors.map(function (e) { return 'line ' + (e[0] + 1) + ': ' + e[1]; }).join('\n')) + '</pre>' : '') +
-        '<button data-export="' + esc(x.id) + '">Export trace (.jsonl)</button></div>';
-    }).join('') + '<div class="card"><b>Report digest</b><div class="digest">' + esc(DATA.digest) + '</div><div class="muted" style="font-size:0.78rem">Record this value when the report is created. Each run\'s head hash is recomputed here from the raw lines. A match with a digest you saved earlier shows nothing was removed from the end of a trace.</div></div>';
+        '<div><button data-export="' + esc(x.id) + '">Export trace (.jsonl)</button></div></div>';
+    }).join('') + '<div class="card" style="box-shadow:none;border-radius:12px;padding:14px"><span class="micro">Report digest</span><div class="digest">' + esc(DATA.digest) + '</div><div class="muted" style="font-size:.78rem">Save this value when the report is created. Each run\'s head hash is recomputed here from the raw lines. A match with a digest you saved earlier shows nothing was removed from the end of a trace.</div></div>';
   }
 }
 function renderControls() {
-  var scrub = $('#scrub'), r = run(), isC = S.view === 'compare', max = isC ? maxN() : r.events.length, val = isC ? S.tick : posOf(r);
+  var scrub = $('#scrub'), r = run(), isC = isMulti(), max = isC ? maxN() : r.events.length, val = isC ? S.tick : posOf(r);
   $('#ctl').style.display = S.view === 'summary' ? 'none' : 'flex';
   scrub.max = max; scrub.value = val;
-  $('#posLabel').textContent = isC ? 'tick ' + val + ' / ' + max + ' (all runs)' : 'event ' + val + ' / ' + max + (val > 0 ? ' · ' + rel(r, r.events[val - 1].ts) : '');
+  $('#posLabel').textContent = isC ? 'tick ' + val + ' / ' + max + ' · all runs' : 'event ' + val + ' / ' + max + (val > 0 ? ' · ' + rel(r, r.events[val - 1].ts) : '');
   var bp = $('#bPlay'); bp.innerHTML = S.playing ? '&#10074;&#10074; Pause' : '&#9654; Play'; bp.setAttribute('aria-label', S.playing ? 'Pause' : 'Play');
   document.querySelectorAll('#viewSeg button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.v === S.view); });
   $('#pathOn').checked = S.pathOn;
 }
-function renderAll() { renderTop(); renderRuns(); renderLegend(); renderControls(); renderStage(); renderPane(); syncHash(); }
+function renderAll() { renderTop(); renderRuns(); renderControls(); renderStage(); renderPane(); syncHash(); }
 function renderLight() { renderControls(); renderStage(); renderPane(); syncHash(); }
 
 /* ---------- interaction ---------- */
 function setPos(v) {
-  if (S.view === 'compare') S.tick = Math.max(0, Math.min(maxN(), v));
+  if (isMulti()) S.tick = Math.max(0, Math.min(maxN(), v));
   else { var r = run(); S.pos[r.id] = Math.max(0, Math.min(r.events.length, v)); }
   renderLight();
 }
-function curPos() { return S.view === 'compare' ? S.tick : posOf(run()); }
-function limit() { return S.view === 'compare' ? maxN() : run().events.length; }
+function curPos() { return isMulti() ? S.tick : posOf(run()); }
+function limit() { return isMulti() ? maxN() : run().events.length; }
 function stop() { S.playing = false; clearInterval(S.timer); }
 function play() {
   if (S.playing) { stop(); renderControls(); return; }
@@ -489,9 +558,9 @@ function syncHash() {
 }
 function readHash() {
   var h = {}; location.hash.replace(/^#/, '').split('&').forEach(function (kv) { var i = kv.indexOf('='); if (i > 0) h[kv.slice(0, i)] = decodeURIComponent(kv.slice(i + 1)); });
-  if (h.v === 'run' || h.v === 'compare' || h.v === 'summary') S.view = h.v;
+  if (['run', 'compare', 'hub', 'summary'].indexOf(h.v) >= 0) S.view = h.v;
   if (h.r && RUNS.some(function (r) { return r.id === h.r; })) S.runId = h.r;
-  if (h.p != null && !isNaN(+h.p)) { if (S.view === 'compare') S.tick = +h.p; else S.pos[S.runId] = +h.p; }
+  if (h.p != null && !isNaN(+h.p)) { if (isMulti()) S.tick = +h.p; else S.pos[S.runId] = +h.p; }
   if (h.n) { S.sel = h.n; S.selRun = S.runId; S.reveal = true; }
 }
 function exportRun(id) {
@@ -503,10 +572,10 @@ function bind() {
     var t = e.target.closest('[data-run],[data-sel],[data-goto],[data-open],[data-export],[data-v],[data-t],[data-zoom],.node'); if (!t) return;
     if (t.dataset.zoom) { var cur = $('#stage button[data-zoom]').getAttribute('aria-pressed') === 'true'; S.fit = !cur; return renderStage(); }
     if (t.dataset.export) return exportRun(t.dataset.export);
-    if (t.dataset.v) { S.view = t.dataset.v; stop(); if (S.view === 'compare' && S.tick === 0) S.tick = maxN(); renderAll(); return; }
+    if (t.dataset.v) { S.view = t.dataset.v; stop(); if (isMulti() && S.tick === 0) S.tick = maxN(); renderAll(); return; }
     if (t.dataset.t) { S.tab = t.dataset.t; renderPane(); return; }
     if (t.dataset.goto) { stop(); setPos(+t.dataset.goto); if (t.dataset.sel) { S.sel = t.dataset.sel; S.selRun = S.runId; renderLight(); } return; }
-    if (t.dataset.open) { if (t.closest('.card') && !e.target.closest('header')) return; return openRun(t.dataset.open); }
+    if (t.dataset.open) return openRun(t.dataset.open);
     if (t.classList.contains('node')) { var svg = t.closest('svg'); return select(svg.dataset.run, t.dataset.id); }
     if (t.dataset.sel) { S.sel = t.dataset.sel; renderAll(); return; }
     if (t.dataset.run && t.closest('#runs')) { S.runId = t.dataset.run; S.selRun = null; S.sel = null; if (S.view === 'summary') S.view = 'run'; renderAll(); }
@@ -537,7 +606,7 @@ function boot() {
   readHash(); bind(); renderAll();
   Promise.all(RUNS.map(verifyRun)).then(function () { renderTop(); renderRuns(); renderPane(); window.__agentgraphReady = true; });
 }
-try { boot(); } catch (err) { document.body.insertAdjacentHTML('afterbegin', '<pre style="color:#a3322a;padding:16px">AgentGraph could not read this report: ' + esc(err && err.message) + '</pre>'); }
+try { boot(); } catch (err) { document.body.insertAdjacentHTML('afterbegin', '<pre style="color:#b3342b;padding:16px">AgentGraph could not read this report: ' + esc(err && err.message) + '</pre>'); }
 window.__agentgraph = { sha256Js: sha256Js, state: S, runs: function () { return RUNS; } };
 })();
 </script>

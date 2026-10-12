@@ -53,14 +53,21 @@ This writes five **simulated** agents solving five different tasks to `out/repor
 
 | View | Use |
 | --- | --- |
-| **Compare** | All runs side by side as graphs. One slider replays them in lockstep, so you can see which strategy reaches an answer in fewer steps. |
-| **Single run** | Full graph with labelled nodes. Play, pause, step back and forward, scrub, 0.5x to 5x. Keys: Space, Left, Right, Home, End. |
-| **Summary** | Table of outcome, steps, tool calls, errors, sub-agents, depth, fan-out, evidence cited, duration, integrity. |
+| **Compare** | Every run as a minimal flow graph on its own card. One slider replays them in lockstep, so you can see which strategy reaches an answer in fewer steps. |
+| **Hub** | The agent at the centre, the tools and data sources it reached for around it. Line weight is the number of calls, dashed red is failures, and the line goes green when that source is the current step. Quickest way to see how two agents differ in approach. |
+| **Run** | One run's full flow graph with labelled nodes. Play, pause, step back and forward, scrub, 0.5x to 5x. Keys: Space, Left, Right, Home, End. |
+| **Summary** | Table of outcome, steps, calls, errors, sub-agents, depth, fan-out, evidence cited, duration, integrity. |
 | **Node tab** | Click any node for its input, output, timing, parent and cited evidence. "Highlight path" lights up everything an answer depends on. |
 | **Event log** | Every event in order. Click a row to jump the replay there. |
 | **Audit tab** | Hash-chain status, head hash per run, a report digest, and export of the original `.jsonl`. |
 
 The address bar tracks the view, run, replay position and selected node (`#v=run&r=react-analyst&p=7&n=n4`). Send someone that link and they land on the exact step you meant.
+
+## Reading the graphs
+
+Hollow circles are steps, joined by a thin track. The dashed green line is the path the agent has actually taken so far. Dotted blue lines are evidence: an answer or decision pointing back at the calls it relied on. Green outline is a tool or data call, blue is reasoning, a ringed dot is a sub-agent, a solid green dot is evidence, a ringed dark dot is the answer, and red is a failure. Select any node and tick "highlight path" to light up everything it depends on.
+
+The visual style follows two references: the minimal vein-to-vein flow diagram on the Terumo BCT Africa Hackathon site (hollow nodes on a track, mono micro-labels, a green live path, dotted loops for the AI layer) and the hub-and-spoke "eve" slide in the AgriChat deck (agent in the middle, data sources around it). It uses IBM Plex when installed and falls back to system fonts so the file stays fully offline.
 
 ## Record your own agent
 
