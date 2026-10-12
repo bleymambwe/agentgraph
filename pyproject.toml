@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentgraph"
+version = "0.1.0"
+description = "Record what agents do, replay it as a graph, audit it later. Zero dependencies."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Blessings Mambwe" }]
+keywords = ["agents", "observability", "audit", "visualisation", "claude-code"]
+
+[project.scripts]
+agentgraph = "agentgraph.cli:main"
+
+[tool.setuptools]
+packages = ["agentgraph", "agentgraph.adapters"]
+
+[tool.setuptools.package-data]
+agentgraph = ["viewer.html"]

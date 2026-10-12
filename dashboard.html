@@ -1,0 +1,337 @@
+<title>Open Agent Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: summary strip (clocks) first, then facts in two-column grids, then the plugin plan. */
+:root {
+  --bg: #eef1f4;
+  --surface: #f8fafb;
+  --fg: #16212b;
+  --muted: #5a6978;
+  --line: #d3dbe3;
+  --accent: #0b6b72;
+  --accent-soft: #d4ebed;
+  --warn: #a85a00;
+  --warn-soft: #f6e6cf;
+  --ok: #23703a;
+  --bad: #a3322a;
+  --font-body: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11181f; --surface: #182129; --fg: #e4eaf0; --muted: #93a1af; --line: #2a3640;
+    --accent: #5fc4cc; --accent-soft: #17383c; --warn: #f0b062; --warn-soft: #3a2b14;
+    --ok: #6cc489; --bad: #ee8a82; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11181f; --surface: #182129; --fg: #e4eaf0; --muted: #93a1af; --line: #2a3640;
+  --accent: #5fc4cc; --accent-soft: #17383c; --warn: #f0b062; --warn-soft: #3a2b14;
+  --ok: #6cc489; --bad: #ee8a82; color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.55; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 28px 16px 56px; display: flex; flex-direction: column; gap: 28px; }
+h1, h2, h3, p { margin: 0; }
+h1 { font-size: clamp(1.7rem, 4.5vw, 2.5rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; text-wrap: balance; }
+h2 { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 0.95rem; font-weight: 700; }
+.eyebrow { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, input:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+header { display: flex; flex-direction: column; gap: 10px; }
+header p { color: var(--muted); max-width: 62ch; }
+section { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 16px; min-width: 0; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 16px; }
+
+.notice { background: var(--warn-soft); border: 1px solid var(--warn); color: var(--fg); border-radius: 6px; padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; }
+.notice strong { color: var(--warn); }
+
+.clocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 12px; }
+.clock { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+.clock .big { font-family: var(--font-mono); font-size: 1.6rem; font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.clock .when { font-size: 0.8rem; color: var(--muted); }
+.clock.hot { border-color: var(--warn); }
+.clock.hot .big { color: var(--warn); }
+
+.timeline { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.timeline li { display: grid; grid-template-columns: 132px 1fr; gap: 12px; padding: 9px 0; border-top: 1px solid var(--line); align-items: baseline; }
+.timeline li:first-child { border-top: 0; }
+.timeline .d { font-family: var(--font-mono); font-size: 0.82rem; font-variant-numeric: tabular-nums; }
+.timeline .past .d, .timeline .past .t { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line); }
+.timeline .next .d { color: var(--accent); font-weight: 500; }
+.tag { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; background: var(--accent-soft); color: var(--accent); margin-left: 6px; }
+.tag.warn { background: var(--warn-soft); color: var(--warn); }
+
+.bars { display: flex; flex-direction: column; gap: 10px; }
+.bar { display: grid; grid-template-columns: minmax(96px, 36%) 1fr 56px; gap: 10px; align-items: center; font-size: 0.88rem; }
+.bar .track { height: 12px; background: var(--line); border-radius: 2px; overflow: hidden; }
+.bar .fill { height: 100%; background: var(--accent); }
+.bar .v { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.bar.alt .fill { background: var(--muted); }
+
+.tracks { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 12px; }
+.track-card { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+.track-card .prize { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.track-card p { font-size: 0.88rem; color: var(--muted); }
+.track-card.pick { border-color: var(--accent); background: var(--accent-soft); }
+.track-card.pick p, .track-card.pick .prize { color: var(--fg); }
+
+.checks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.checks label { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
+.checks input { margin-top: 4px; accent-color: var(--accent); width: 16px; height: 16px; flex: none; }
+.checks span small { display: block; color: var(--muted); font-size: 0.82rem; }
+.checks input:checked + span { color: var(--muted); text-decoration: line-through; }
+
+.pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { font-family: var(--font-mono); font-size: 0.78rem; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 3px 11px; }
+
+figure { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.scroll { overflow-x: auto; }
+svg { display: block; width: 100%; min-width: 640px; height: auto; color: var(--fg); }
+svg text { font-family: var(--font-mono); font-size: 12px; fill: currentColor; }
+svg .mut { fill: var(--muted); }
+svg .box { fill: var(--surface); stroke: currentColor; stroke-width: 1.2; }
+svg .hl { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.6; }
+svg .ln { stroke: currentColor; stroke-width: 1.2; fill: none; }
+svg .ar { fill: currentColor; }
+figcaption { font-size: 0.85rem; color: var(--muted); max-width: 70ch; }
+
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td { text-align: left; padding: 8px 10px; border-top: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; border-top: 0; }
+.risk { color: var(--bad); font-weight: 700; }
+ul.plain { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 5px; }
+.src li { word-break: break-word; }
+footer { font-size: 0.8rem; color: var(--muted); }
+@media (max-width: 520px) {
+  .timeline li { grid-template-columns: 1fr; gap: 0; }
+  .bar { grid-template-columns: 1fr 56px; }
+  .bar .track { grid-column: 1 / -1; grid-row: 2; }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Brief · as of 12 Oct 2026 · online, 144 hours, teams of 1–5</div>
+    <h1>Open Agent Hackathon 2026</h1>
+    <p>Build an agent that does real work. Up to $20,000 in prizes ($15,000 cash, $5,000 in-kind). Below: the clocks, tracks, scoring and rules, then a plan for an open-source agent graph viewer to enter.</p>
+  </header>
+
+  <div class="notice" role="note">
+    <strong>The sources disagree on dates.</strong>
+    <span>The organiser's event page (GenAI.Works) shows a build window of 22–27 Oct with registration open until 22 Oct. A community GitHub repo shows the same event one week earlier (registration closing 13 Oct, submissions 20 Oct). This brief uses the organiser's page. Register now anyway and confirm the dates on the event page and in HackOS.</span>
+  </div>
+
+  <section aria-labelledby="clocks-h">
+    <h2 id="clocks-h">Clocks</h2>
+    <div class="clocks">
+      <div class="clock hot"><div class="eyebrow">Registration closes</div><div class="big" data-target="2026-10-22T23:59:00Z">–</div><div class="when">22 Oct 2026, 23:59 UTC</div></div>
+      <div class="clock"><div class="eyebrow">Build window opens</div><div class="big" data-target="2026-10-22T00:00:00Z">–</div><div class="when">22 Oct 2026, 00:00 UTC</div></div>
+      <div class="clock hot"><div class="eyebrow">Submissions close (hard)</div><div class="big" data-target="2026-10-27T23:45:00Z">–</div><div class="when">27 Oct 2026, 23:45 UTC</div></div>
+      <div class="clock"><div class="eyebrow">Results announced</div><div class="big" data-target="2026-11-06T16:00:00Z">–</div><div class="when">6 Nov 2026, 16:00 UTC</div></div>
+    </div>
+  </section>
+
+  <div class="grid2">
+    <section aria-labelledby="tl-h">
+      <h2 id="tl-h">Timeline</h2>
+      <div class="panel">
+        <ol class="timeline" id="timeline">
+          <li data-at="2026-08-14T00:00:00Z"><span class="d">14 Aug</span><span class="t">Registration opens</span></li>
+          <li data-at="2026-10-22T00:00:00Z"><span class="d">22 Oct 00:00</span><span class="t">Build window opens</span></li>
+          <li data-at="2026-10-22T23:59:00Z"><span class="d">22 Oct 23:59</span><span class="t">Registration closes <span class="tag warn">hard</span></span></li>
+          <li data-at="2026-10-27T00:00:00Z"><span class="d">27 Oct 00:00</span><span class="t">Judging opens</span></li>
+          <li data-at="2026-10-27T23:45:00Z"><span class="d">27 Oct 23:45</span><span class="t">Submissions close, via HackOS <span class="tag warn">hard</span></span></li>
+          <li data-at="2026-11-06T16:00:00Z"><span class="d">6 Nov 16:00</span><span class="t">Results announced</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <section aria-labelledby="sc-h">
+      <h2 id="sc-h">How you are scored</h2>
+      <div class="panel bars" role="img" aria-label="Judging weights out of 100: Impact 30, Technical 20, Innovation 15, Demo 15, Product and UX 10, Sponsor tech 10">
+        <div class="bar"><span>Impact</span><span class="track"><span class="fill" style="display:block;width:100%"></span></span><span class="v">30</span></div>
+        <div class="bar"><span>Technical</span><span class="track"><span class="fill" style="display:block;width:66.7%"></span></span><span class="v">20</span></div>
+        <div class="bar"><span>Innovation</span><span class="track"><span class="fill" style="display:block;width:50%"></span></span><span class="v">15</span></div>
+        <div class="bar"><span>Demo</span><span class="track"><span class="fill" style="display:block;width:50%"></span></span><span class="v">15</span></div>
+        <div class="bar alt"><span>Product &amp; UX</span><span class="track"><span class="fill" style="display:block;width:33.3%"></span></span><span class="v">10</span></div>
+        <div class="bar alt"><span>Sponsor tech</span><span class="track"><span class="fill" style="display:block;width:33.3%"></span></span><span class="v">10</span></div>
+        <p style="font-size:0.82rem;color:var(--muted)">Points out of 100. Judges are GenAI.Works staff. The community repo adds: judges need to see it run, and a clear, explainable solution beats a polished UI over a weak system.</p>
+      </div>
+    </section>
+  </div>
+
+  <section aria-labelledby="tr-h">
+    <h2 id="tr-h">Tracks and prizes</h2>
+    <div class="tracks">
+      <div class="track-card pick">
+        <div class="eyebrow">Track 02 · suggested</div>
+        <h3>The Agent That Can Explain Why</h3>
+        <div class="prize">$4,350 · 1st $2,000 · 2nd $1,350 · 3rd $1,000</div>
+        <p>Probe complex questions across several data sources, link findings, and answer with evidence. A graph of how the answer was reached is the product.</p>
+      </div>
+      <div class="track-card">
+        <div class="eyebrow">Track 01</div>
+        <h3>Solving Fragmented Intelligence</h3>
+        <div class="prize">$4,350 · 1st $2,000 · 2nd $1,350 · 3rd $1,000</div>
+        <p>Find and combine information across scattered data sources.</p>
+      </div>
+      <div class="track-card">
+        <div class="eyebrow">Track 03</div>
+        <h3>Reasoning Architecture</h3>
+        <div class="prize">$4,300 · 1st $2,000 · 2nd $1,300 · 3rd $1,000</div>
+        <p>Turn data, knowledge, memory and reasoning into dependable decisions and actions.</p>
+      </div>
+      <div class="track-card">
+        <div class="eyebrow">Bonus</div>
+        <h3>Wildcard [Tinkerer]</h3>
+        <div class="prize">$2,000 · 1st $1,000 · 2nd $600 · 3rd $400</div>
+        <p>Extend an existing project. Only the new work is scored. Must integrate Zetaris and Meterless.</p>
+      </div>
+    </div>
+    <p style="font-size:0.85rem;color:var(--muted)">The $5,000 in-kind rewards are shared among selected winners on top of the cash. One primary track per submission.</p>
+  </section>
+
+  <div class="grid2">
+    <section aria-labelledby="ck-h">
+      <h2 id="ck-h">Submission checklist</h2>
+      <div class="panel">
+        <ul class="checks" id="checks">
+          <li><label><input type="checkbox" id="c1" data-k="register"><span>Register on GenAI.Works<small>One sign-up covers the event, Discord and updates. 2,879 registered so far.</small></span></label></li>
+          <li><label><input type="checkbox" id="c2" data-k="hackos"><span>Get into HackOS and Discord<small>All operations run through HackOS: team formation, mentors, submissions.</small></span></label></li>
+          <li><label><input type="checkbox" id="c3" data-k="video"><span>Demo video, 1–4 minutes<small>Main workflow, key features, how Zetaris and Meterless are integrated.</small></span></label></li>
+          <li><label><input type="checkbox" id="c4" data-k="deck"><span>Slide deck<small>Problem and users, solution, architecture, stack, sponsor use, visuals, next steps.</small></span></label></li>
+          <li><label><input type="checkbox" id="c5" data-k="repo"><span>Public GitHub repo with README<small>Setup, usage, dependencies. Add a .env.example. No keys in git.</small></span></label></li>
+          <li><label><input type="checkbox" id="c6" data-k="sponsor"><span>Sponsor technology explanation<small>Zetaris, Meterless, how Cursor was used, where NVIDIA contributes.</small></span></label></li>
+        </ul>
+      </div>
+    </section>
+
+    <section aria-labelledby="ru-h">
+      <h2 id="ru-h">Rules and sponsors</h2>
+      <div class="panel" style="display:flex;flex-direction:column;gap:12px">
+        <ul class="plain">
+          <li>Free. Open worldwide, age 16 or over at the start of the build window.</li>
+          <li>Teams of 1–5. Solo entries compete in the same pool.</li>
+          <li>One account per person. Duplicate accounts disqualify the whole team.</li>
+          <li>Must be a working agent that acts, not a chatbot, mockup or prompt experiment.</li>
+          <li>Organiser and judging-sponsor employees can enter but cannot win cash.</li>
+        </ul>
+        <div class="pills"><span class="pill">NVIDIA (Nemotron)</span><span class="pill">Zetaris (data)</span><span class="pill">Meterless (models, prompts)</span><span class="pill">Cursor</span><span class="pill">Bright Data</span></div>
+        <p style="font-size:0.82rem;color:var(--muted)">The event page lists NVIDIA, Zetaris, SpaceX AI and Meterless as sponsors; the academy page and repo also name Cursor and Bright Data. The repo says submissions must use Zetaris and Meterless. The event page's full rules are collapsed, so read them in HackOS before you commit to a stack.</p>
+      </div>
+    </section>
+  </div>
+
+  <section aria-labelledby="pl-h">
+    <div class="eyebrow">Your idea</div>
+    <h2 id="pl-h">AgentGraph: an open-source plugin that draws the agent's workflow</h2>
+    <p style="max-width:70ch">Any agent runtime emits events. AgentGraph turns them into one normalised trace and renders it live as a graph: steps, tool calls, sub-agents, data queries, model calls and the evidence each answer rests on. Proposal below is mine, not from the organisers.</p>
+    <figure class="panel">
+      <div class="scroll">
+        <svg viewBox="0 0 800 330" role="img" aria-label="Four event sources feed per-runtime adapters into a normalised trace, a local server, and a live graph UI with an evidence panel">
+          <defs><marker id="ah" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon class="ar" points="0,0 8,4 0,8"/></marker></defs>
+          <text class="mut" x="10" y="16">RUNTIMES</text>
+          <rect class="box" x="10" y="26" width="170" height="44" rx="3"/><text x="22" y="45">Claude Code</text><text class="mut" x="22" y="61">hooks: Pre/PostToolUse</text>
+          <rect class="box" x="10" y="86" width="170" height="44" rx="3"/><text x="22" y="105">MCP servers</text><text class="mut" x="22" y="121">tool-call proxy</text>
+          <rect class="box" x="10" y="146" width="170" height="44" rx="3"/><text x="22" y="165">Open models</text><text class="mut" x="22" y="181">OpenAI-style API proxy</text>
+          <rect class="box" x="10" y="206" width="170" height="44" rx="3"/><text x="22" y="225">Any other agent</text><text class="mut" x="22" y="241">OTel spans or JSONL</text>
+          <path class="ln" d="M180 48 H236 V138" /><path class="ln" d="M180 108 H236"/><path class="ln" d="M180 168 H236 V152"/><path class="ln" d="M180 228 H236 V152"/>
+          <rect class="hl" x="236" y="116" width="150" height="56" rx="3"/><text x="248" y="138">Adapters</text><text class="mut" x="248" y="156">one per runtime</text>
+          <line class="ln" x1="386" y1="144" x2="440" y2="144" marker-end="url(#ah)"/>
+          <text class="mut" x="392" y="136">events</text>
+          <rect class="box" x="440" y="100" width="150" height="88" rx="3"/><text x="452" y="122">Trace schema</text><text class="mut" x="452" y="141">node: id, kind, parent</text><text class="mut" x="452" y="157">edge: calls, feeds, cites</text><text class="mut" x="452" y="173">status, tokens, ms</text>
+          <line class="ln" x1="590" y1="144" x2="626" y2="144" marker-end="url(#ah)"/>
+          <rect class="box" x="626" y="116" width="164" height="56" rx="3"/><text x="638" y="138">Local server</text><text class="mut" x="638" y="156">SSE, JSONL on disk</text>
+          <line class="ln" x1="708" y1="172" x2="708" y2="214" marker-end="url(#ah)"/>
+          <text class="mut" x="716" y="196">live</text>
+          <rect class="hl" x="440" y="214" width="350" height="100" rx="3"/><text x="452" y="236">Graph UI (browser)</text>
+          <text class="mut" x="452" y="256">live DAG, replay scrubber</text><text class="mut" x="452" y="272">click a node: prompt, output, cost</text><text class="mut" x="452" y="288">"why this answer?" evidence path</text>
+          <text class="mut" x="452" y="304">export: static HTML + JSON</text>
+        </svg>
+      </div>
+      <figcaption>Each runtime gets a thin adapter that writes the same trace schema. The server and UI never need to know which agent produced the events, so Claude Code, MCP tools and open models share one viewer.</figcaption>
+    </figure>
+
+    <div class="grid2">
+      <div class="panel" style="display:flex;flex-direction:column;gap:8px">
+        <h3>Why Track 02 fits</h3>
+        <ul class="plain">
+          <li>The track asks for answers backed by evidence. The graph's "why this answer" path is that evidence, shown.</li>
+          <li>Impact (30) and Demo (15) are 45 of 100 points. A live graph of an agent working is a strong demo.</li>
+          <li>Sponsor tech (10) becomes visible as typed nodes: Zetaris queries and Meterless/Nemotron model calls get their own colour in the graph.</li>
+        </ul>
+      </div>
+      <div class="panel" style="display:flex;flex-direction:column;gap:8px">
+        <h3 class="risk">Risks to settle first</h3>
+        <ul class="plain">
+          <li><b>It must be an agent.</b> Rules ask for an agent that does work, not only a tool. Ship a reference agent that investigates a real question across data sources and is drawn by AgentGraph as it runs.</li>
+          <li><b>Sponsor integration is required.</b> The repo says Zetaris and Meterless must be used. Check in HackOS what a minimal integration needs.</li>
+          <li><b>Scope.</b> Ship one adapter well (Claude Code hooks) plus the generic JSONL format. Add others after the demo.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="panel scroll">
+      <table>
+        <thead><tr><th>Window</th><th>Goal</th><th>Done when</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">Now – 21 Oct</td><td>Register, read HackOS rules, get Zetaris and Meterless access, freeze the trace schema</td><td>A sample trace file renders in a throwaway page</td></tr>
+          <tr><td class="mono">22 – 23 Oct</td><td>Claude Code hook adapter, local server with SSE, basic live graph</td><td>A real Claude Code session draws itself</td></tr>
+          <tr><td class="mono">24 – 25 Oct</td><td>Reference agent with Zetaris and Meterless nodes, evidence path view, replay</td><td>One question answered with a clickable "why" path</td></tr>
+          <tr><td class="mono">26 Oct</td><td>Open-source polish: README, .env.example, licence, second adapter if time</td><td>A clean clone runs in under 5 minutes</td></tr>
+          <tr><td class="mono">27 Oct</td><td>Demo video, deck, sponsor write-up; submit before 23:45 UTC</td><td>Submitted in HackOS with hours to spare</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="so-h">
+    <h2 id="so-h">Sources</h2>
+    <ul class="plain src">
+      <li><a href="https://hackathon.genai.works/event/open-agent-hackathon-2026">Organiser event page (GenAI.Works)</a>: dates, tracks, prizes, scoring weights.</li>
+      <li><a href="https://academy.genai.works/courses/open-agent-hackathon-2026/details">GenAI Academy course page</a>: workshops, sponsor stack, track list.</li>
+      <li><a href="https://github.com/ryprojects1/OPENAGENTHACKATHON2026">Community GitHub repo</a>: earlier schedule, submission components, rules. Not run by the organiser as far as I can tell.</li>
+    </ul>
+  </section>
+
+  <footer>Prices, dates and rules can change. Last checked 12 Oct 2026. Checklist ticks are stored only in this browser.</footer>
+</div>
+
+<script>
+(function () {
+  function fmt(ms) {
+    if (ms <= 0) return "passed";
+    var s = Math.floor(ms / 1000), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
+    return d + "d " + String(h).padStart(2, "0") + "h " + String(m).padStart(2, "0") + "m";
+  }
+  function tick() {
+    var now = Date.now();
+    document.querySelectorAll("[data-target]").forEach(function (el) {
+      el.textContent = fmt(new Date(el.dataset.target).getTime() - now);
+    });
+    var marked = false;
+    document.querySelectorAll("#timeline li").forEach(function (li) {
+      var past = new Date(li.dataset.at).getTime() < now;
+      li.classList.toggle("past", past);
+      li.classList.remove("next");
+      if (!past && !marked) { li.classList.add("next"); marked = true; }
+    });
+  }
+  tick(); setInterval(tick, 30000);
+
+  var KEY = "oah-checklist";
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) {}
+  document.querySelectorAll("#checks input").forEach(function (cb) {
+    cb.checked = !!saved[cb.dataset.k];
+    cb.addEventListener("change", function () {
+      saved[cb.dataset.k] = cb.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {}
+    });
+  });
+})();
+</script>

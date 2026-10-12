@@ -1,0 +1,8 @@
+out/
+.agentgraph/
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.venv/
